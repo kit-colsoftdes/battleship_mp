@@ -35,7 +35,7 @@ def unpack(_msg: str) -> "dict[str, Any]":
     return payload
 
 
-def unpack_keys(_msg: str, keys: "tuple[str]") -> "Iterable[Any, ...]":
+def unpack_keys(_msg: str, keys: "tuple[str, ...]") -> "Iterable[Any, ...]":
     """Like :py:func:`unpack` and return only the ``keys``' values of the payload"""
     payload = unpack(_msg)
     try:
