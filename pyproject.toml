@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "battleship-mp"
+version = "1.0.0"
+authors = [
+  { name="Max Fischer", email="max.fischer@kit.edu" },
+]
+description = "Multiplayer client/server for CSD BattleShip"
+readme = "README.rst"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+  "websockets",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "flake8",
+    "flake8-bugbear",
+    "black; implementation_name == 'cpython'",
+    "mypy; implementation_name == 'cpython'",
+]
+doc = ["sphinx"]
+
+[project.urls]
+"Homepage" = "https://git.scc.kit.edu/collabsoftwaredesign-2023/battleship_mp"
+"Bug Tracker" = "https://git.scc.kit.edu/collabsoftwaredesign-2023/battleship_mp/issues"
+
+[tool.setuptools.packages.find]
+include = ["battleship_mp", "battleship_mp.*"]
