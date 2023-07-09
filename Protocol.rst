@@ -127,8 +127,8 @@ Waiting for a shot:
 Message
 -------
 
-``expect_shot: Any``
-    the payload is discarded
+``expect_shot: True``
+    the value is discarded
 
 Response
 --------
@@ -153,6 +153,9 @@ Message
 
 ``winner: str | None``
     identifier of the winning player or ``None`` in case of a tie
+
+``forfeit: bool``
+    whether the local player forfeits the game
 
 Response
 --------
