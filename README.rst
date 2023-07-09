@@ -6,14 +6,20 @@ This package provides a simple client and server for the Battleship game.
 It tries to be roughly compatible with the Collaborative Software Design implementation.
 Behind the scenes, it uses `WebSocket`_ for communication between client and server.
 
-Usage
------
+Client Usage
+------------
 
 Set the environment variable ``BMP_SERVER_URL`` to the server's websocket URL.
 For example, if the server runs locally on port ``8765``
 then use ``BMP_SERVER_URL="ws://localhost:8765"`` before starting the program.
 Alternatively, this can also be set inside Python by using
 ``os.environ["BMP_SERVER_URL"] = "ws://localhost:8765"``.
+
+The entire client functionality is encapsulated by ``battleship_mp.client.GameSession``.
+This allows to join a game, transmit a board of set ships, and exchange shots.
+Note that the server does **not** perform any notable game state evaluation;
+multiplayer peers **must** exchange their game state (notably, their entire game board)
+to locally check the game progress.
 
 Installation
 ------------
