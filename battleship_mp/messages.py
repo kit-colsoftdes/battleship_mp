@@ -1,15 +1,15 @@
-from typing import Any, Iterable
+from typing import Any, Iterable, NoReturn
 import json
 
 from websockets.sync.connection import Connection
 
-from .exceptions import ProtocolError
+from .exceptions import ProtocolError, GameError
 
 
 # We only support a few known errors to avoid arbitrary calls
 ERRORS = {
     e.__name__: e for e in (
-        ValueError, TypeError
+        ValueError, TypeError, ProtocolError, GameError
     )
 }
 
@@ -48,3 +48,9 @@ def communicate(_ws: Connection, *keys: str, **payload: Any) -> "Iterable[Any, .
     """Send a message ``payload`` and return the reply ``keys`` values"""
     _ws.send(pack(payload))
     return unpack_keys(_ws.recv(), keys)
+
+
+def fail(_ws: Connection, error: Exception) -> NoReturn:
+    """Fail communication with ``error``, passing it on and raising it locally"""
+    _ws.send(pack(error=error))
+    raise error
