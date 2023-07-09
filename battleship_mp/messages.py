@@ -1,0 +1,50 @@
+from typing import Any, Iterable
+import json
+
+from websockets.sync.connection import Connection
+
+from .exceptions import ProtocolError
+
+
+# We only support a few known errors to avoid arbitrary calls
+ERRORS = {
+    e.__name__: e for e in (
+        ValueError, TypeError
+    )
+}
+
+
+def pack(payload: "dict[str, Any]" = None, error: "Exception | None" = None) -> str:
+    """Pack an error or payload into a message"""
+    if error is not None:
+        assert not payload, "message payload is ignored if 'error' is given"
+        return json.dumps(
+            [{}, {"exc_type": type(error).__name__, "exc_msg": str(error)}]
+        )
+    elif payload:  # reject None and empty payloads – empty messages are nonsensical
+        return json.dumps([payload or {}, {}])
+    else:
+        raise ValueError("one of 'error' or 'payload' must be given")
+
+
+def unpack(_msg: str) -> "dict[str, Any]":
+    """Unpack a received message, returning the payload or raising the error"""
+    payload, error = json.loads(_msg)
+    if error:
+        raise ERRORS[error["exc_type"]](error["exc_msg"])
+    return payload
+
+
+def unpack_keys(_msg: str, keys: "tuple[str]") -> "Iterable[Any, ...]":
+    """Like :py:func:`unpack` and return only the ``keys``' values of the payload"""
+    payload = unpack(_msg)
+    try:
+        return [payload[key] for key in keys]
+    except KeyError as ke:
+        raise ProtocolError(f"missing reply field '{ke.args[0]}'") from ke
+
+
+def communicate(_ws: Connection, *keys: str, **payload: Any) -> "Iterable[Any, ...]":
+    """Send a message ``payload`` and return the reply ``keys`` values"""
+    _ws.send(pack(payload))
+    return unpack_keys(_ws.recv(), keys)
