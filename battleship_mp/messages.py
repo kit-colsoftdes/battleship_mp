@@ -21,7 +21,7 @@ def pack(payload: "dict[str, Any]" = None, error: "Exception | None" = None) -> 
         return json.dumps(
             [{}, {"exc_type": type(error).__name__, "exc_msg": str(error)}]
         )
-    elif payload:  # reject None and empty payloads – empty messages are nonsensical
+    elif payload is not None:
         return json.dumps([payload or {}, {}])
     else:
         raise ValueError("one of 'error' or 'payload' must be given")

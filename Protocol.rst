@@ -119,7 +119,7 @@ Message
 Response
 --------
 
-None.
+Empty.
 The client application is expected to check by itself whether the shot hit anything.
 
 Waiting for a shot:
