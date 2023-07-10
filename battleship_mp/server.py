@@ -170,5 +170,6 @@ if __name__ == "__main__":
     )
     CLI.add_argument("--log-level", help="level of log output", default="WARNING")
     args = CLI.parse_args()
-    logging.getLogger("battleship_mp").setLevel(args.log_level.upper())
+    logging.basicConfig()
+    logger.setLevel(args.log_level)
     run_asyncio(serve(args.PORT, args.ADDRESS))
