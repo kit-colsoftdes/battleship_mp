@@ -155,7 +155,7 @@ class Server:
 async def serve(port: int, hosts: "Sequence[str, ...] | None"):
     server = Server()
     async with websockets.serve(server.handle_game, hosts, port):
-        logging.info("listening on %s of %s", port, hosts)
+        logger.info("listening on %s of %s", port, hosts)
         await Future()
 
 
