@@ -116,9 +116,7 @@ async def simulate():
     for _ in range(64):
         players = random.sample(PLAYERS, 2)
         print("###", players[0], "vs", players[1], "###")
-        await asyncio.gather(
-            *(asyncio.to_thread(play, player) for player in players)
-        )
+        await asyncio.gather(*(asyncio.to_thread(play, player) for player in players))
         await asyncio.sleep(0.5)
     server_task.cancel()
 

@@ -166,7 +166,7 @@ if __name__ == "__main__":
         "ADDRESS",
         type=str,
         nargs="*",
-        help="addresses/hostnames to bind to [default: all]"
+        help="addresses/hostnames to bind to [default: all]",
     )
     CLI.add_argument("--log-level", help="level of log output", default="WARNING")
     args = CLI.parse_args()

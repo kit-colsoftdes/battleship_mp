@@ -12,6 +12,7 @@ class Deadlock(GameError):
 
 class GameEnd(Exception):
     """The game has been ended"""
+
     def __init__(self, winner: "str | None"):
         super().__init__(winner)
         self.winner = winner

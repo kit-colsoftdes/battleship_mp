@@ -8,9 +8,7 @@ from .exceptions import ProtocolError, GameEnd
 
 # We only support a few known errors to avoid arbitrary calls
 ERRORS = {
-    e.__name__: e for e in (
-        ValueError, TypeError, KeyError, ProtocolError, GameEnd
-    )
+    e.__name__: e for e in (ValueError, TypeError, KeyError, ProtocolError, GameEnd)
 }
 
 
