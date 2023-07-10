@@ -19,7 +19,7 @@ def pack(payload: "dict[str, Any]" = None, error: "Exception | None" = None) -> 
     if error is not None:
         assert not payload, "message payload is ignored if 'error' is given"
         return json.dumps(
-            [{}, {"exc_type": type(error).__name__, "exc_msg": str(error)}]
+            [{}, {"exc_type": type(error).__name__, "exc_args": error.args}]
         )
     elif payload is not None:
         return json.dumps([payload or {}, {}])
@@ -31,7 +31,7 @@ def unpack(_msg: str) -> "dict[str, Any]":
     """Unpack a received message, returning the payload or raising the error"""
     payload, error = json.loads(_msg)
     if error:
-        raise ERRORS[error["exc_type"]](error["exc_msg"])
+        raise ERRORS[error["exc_type"]](*error["exc_args"])
     return payload
 
 
