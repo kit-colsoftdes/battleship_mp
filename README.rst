@@ -25,12 +25,12 @@ Installation
 ------------
 
 You can install the package directly from the repository;
-only Python >= 3.7 is required.
+only Python >= 3.8 is required.
 Using a `venv`_ is strongly recommended!
 
 .. code:: bash
 
-    ~ $ git clone https://git.scc.kit.edu/collabsoftwaredesign-2023/battleship_mp.git
+    ~ $ git clone https://github.com/kit-colsoftdes/battleship_mp.git
     Cloning into 'battleship_mp'...
     ...
     ~ $ python3 -m venv venv
