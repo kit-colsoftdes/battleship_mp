@@ -1,11 +1,11 @@
-from typing import NamedTuple, Tuple, Iterable, Any, Sequence
+from typing import Awaitable, NamedTuple, Tuple, Iterable, Any, Sequence
 from asyncio import gather, Future, ensure_future, run as run_asyncio
 import argparse
 import random
 import logging
 
-import websockets
-from websockets.server import WebSocketServerProtocol
+import websockets  # type: ignore
+from websockets.server import WebSocketServerProtocol  # type: ignore
 
 from .messages import pack, unpack, unpack_keys
 from .exceptions import Deadlock, GameEnd
@@ -14,8 +14,8 @@ from .exceptions import Deadlock, GameEnd
 logger = logging.getLogger("battleship_mp.server")
 
 
-def send(_ws: WebSocketServerProtocol, **payload):
-    return _ws.send(pack(payload))
+def send(_ws: WebSocketServerProtocol, **payload: Any) -> Awaitable[None]:
+    return _ws.send(pack(payload))  # type: ignore
 
 
 async def recv(_ws: WebSocketServerProtocol, *keys: str) -> Iterable[Any]:
@@ -35,7 +35,7 @@ class Game:
         self.task = ensure_future(self.run())
         self.identifier = f"{client_a.identifier!r} vs {client_b.identifier!r}"
 
-    async def run(self):
+    async def run(self) -> None:
         logger.info("run %s", self.identifier)
         try:
             await self.handle_start()
@@ -51,7 +51,7 @@ class Game:
             )
             logger.exception("abort %s", self.identifier)
 
-    async def handle_start(self):
+    async def handle_start(self) -> None:
         logger.debug("handle_start %s", self.identifier)
         for idx, client in enumerate(self.clients):
             await send(
@@ -60,7 +60,7 @@ class Game:
                 first=(idx == 0),
             )
 
-    async def handle_placement(self):
+    async def handle_placement(self) -> None:
         logger.debug("handle_placement %s", self.identifier)
         keys = "sizes", "coords", "vertical"
         ships = await gather(
@@ -72,7 +72,7 @@ class Game:
             send(self.clients[1].websocket, **dict(zip(keys, ships[0]))),
         )
 
-    async def handle_shots(self):
+    async def handle_shots(self) -> None:
         logger.debug("handle_shots %s", self.identifier)
         sock_a, sock_b = self.clients[0].websocket, self.clients[1].websocket
         buffer: "tuple[Any, Any]| None" = None
@@ -101,7 +101,9 @@ class Game:
                 buffer = a_action["announce_shot"], b_action["announce_shot"]
                 await gather(send(sock_a), send(sock_b))
 
-    async def handle_end(self, a_payload, b_payload):
+    async def handle_end(
+        self, a_payload: "dict[str, Any]", b_payload: "dict[str, Any]"
+    ) -> None:
         if "winner" not in a_payload and "winner" not in b_payload:
             return
         # if any player forfeits or yields to the opponent, accept this directly...
@@ -121,16 +123,16 @@ class Game:
 
 
 class Server:
-    def __init__(self):
+    def __init__(self) -> None:
         # an unmatched client waiting for a game to start
         self.wait_start: "Tuple[Client, Future[Game]] | None" = None
 
-    async def handle_game(self, websocket: WebSocketServerProtocol):
+    async def handle_game(self, websocket: WebSocketServerProtocol) -> None:
         logger.debug("handle connection %s", websocket)
         game = await self.create_game(websocket)
         await game.task
 
-    async def create_game(self, websocket: WebSocketServerProtocol):
+    async def create_game(self, websocket: WebSocketServerProtocol) -> Game:
         # wait for the client to start the game
         identifier, version = await recv(websocket, "identifier", "version")
         logger.info("start %r", identifier)
@@ -150,7 +152,7 @@ class Server:
         return game
 
 
-async def serve(port: int, hosts: "Sequence[str, ...] | None"):
+async def serve(port: int, hosts: "Sequence[str] | None") -> None:
     server = Server()
     async with websockets.serve(server.handle_game, hosts, port):
         logger.info("listening on %s of %s", port, hosts)

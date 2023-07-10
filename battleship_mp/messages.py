@@ -1,7 +1,7 @@
 from typing import Any, Iterable, NoReturn
 import json
 
-from websockets.sync.connection import Connection
+from websockets.sync.connection import Connection  # type: ignore
 
 from .exceptions import ProtocolError, GameEnd
 
@@ -12,7 +12,9 @@ ERRORS = {
 }
 
 
-def pack(payload: "dict[str, Any]" = None, error: "Exception | None" = None) -> str:
+def pack(
+    payload: "dict[str, Any] | None" = None, error: "Exception | None" = None
+) -> str:
     """Pack an error or payload into a message"""
     if error is not None:
         assert not payload, "message payload is ignored if 'error' is given"
@@ -30,10 +32,10 @@ def unpack(_msg: str) -> "dict[str, Any]":
     payload, error = json.loads(_msg)
     if error:
         raise ERRORS[error["exc_type"]](*error["exc_args"])
-    return payload
+    return payload  # type: ignore
 
 
-def read_keys(payload, keys: "tuple[str, ...]") -> "Iterable[Any, ...]":
+def read_keys(payload: "dict[str, Any]", keys: "tuple[str, ...]") -> "Iterable[Any]":
     """Unpack the ``keys`` of an unpacked ``payload``"""
     try:
         return [payload[key] for key in keys]
@@ -41,13 +43,13 @@ def read_keys(payload, keys: "tuple[str, ...]") -> "Iterable[Any, ...]":
         raise ProtocolError(f"missing reply field {ke.args[0]!r}") from ke
 
 
-def unpack_keys(_msg: str, keys: "tuple[str, ...]") -> "Iterable[Any, ...]":
+def unpack_keys(_msg: str, keys: "tuple[str, ...]") -> "Iterable[Any]":
     """Convenience function to :py:func:`~.unpack` and :py:func:`~.read_keys`"""
     payload = unpack(_msg)
     return read_keys(payload, keys)
 
 
-def communicate(_ws: Connection, *keys: str, **payload: Any) -> "Iterable[Any, ...]":
+def communicate(_ws: Connection, *keys: str, **payload: Any) -> "Iterable[Any]":
     """Send a message ``payload`` and return the reply ``keys`` values"""
     _ws.send(pack(payload))
     return unpack_keys(_ws.recv(), keys)

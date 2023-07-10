@@ -1,10 +1,10 @@
-from typing import Tuple, ContextManager
+from typing import Tuple, Generator
 from contextlib import contextmanager
 import random
 import os
 from enum import Enum, auto
 
-from websockets.sync.client import connect, ClientConnection
+from websockets.sync.client import connect, ClientConnection  # type: ignore
 
 from . import SERVER_URL_ENV, PROTOCOL_VERSION
 from .messages import communicate, fail
@@ -68,7 +68,7 @@ class GameSession:
         # rough sanity check if the session is used right
         self._state: State = State.STARTED
 
-    def _check_transition(self, new: State, *expected: State):
+    def _check_transition(self, new: State, *expected: State) -> None:
         if self._state not in expected:
             expect_msg = f"{', '.join(e.name for e in expected)} => {new.name}"
             got_msg = f"{self._state.name} => {new.name}"
@@ -81,7 +81,7 @@ class GameSession:
 
     @classmethod
     @contextmanager
-    def connect(cls, local_name: "None | str") -> "ContextManager[GameSession]":
+    def connect(cls, local_name: "None | str") -> "Generator[GameSession, None, None]":
         """
         Create a new session with a new connection to the server
 
@@ -154,9 +154,9 @@ class GameSession:
         """Wait for a shot to be fired and return its coordinates"""
         self._check_transition(State.FIRING, State.PLACED, State.FIRING)
         (coord,) = communicate(self._ws, "coord", expect_shot=True)
-        return coord
+        return tuple(coord)  # type: ignore
 
-    def end_game(self, winner: "str | None", forfeit: bool = False) -> str:
+    def end_game(self, winner: "str | None", forfeit: bool = False) -> "str | None":
         """
         End the game, announcing a ``winner`` or ``forfeit``
 
