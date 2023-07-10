@@ -105,9 +105,7 @@ class Game:
         if "winner" not in a_payload and "winner" not in b_payload:
             return
         # if any player forfeits or yields to the opponent, accept this directly...
-        for payload, opponent in zip(
-            (a_payload, b_payload), self.clients[::-1]
-        ):
+        for payload, opponent in zip((a_payload, b_payload), self.clients[::-1]):
             if payload.get("forfeit") or payload.get("winner") == opponent.identifier:
                 exc = GameEnd(winner=opponent.identifier)
                 break
