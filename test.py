@@ -1,3 +1,26 @@
+"""
+Test script to simulate a multiplayer game including a server and two "AI" clients
+
+For simplicity, the game is run on a 3x3 board with just two ships per player.
+All "AI" decisions are random:
+each player randomly chooses ship positions via :py:func:`create_positions`
+and randomly goes through all possible :py:data:`SHOTS`.
+
+Two representations are used for the board:
+compressed as a sequence of :py:data:`~.client.SHIP_PLACEMENT`
+and expanded as a board represented by rows of fields.
+The former can be converted to the latter by :py:func:`expand`,
+and the board is most suitable to compute the game state.
+For convenience, :py:func:`defeated` can check if a board
+indicates that its player has lost.
+
+A fully working client for an "AI" player is implemented by :py:func:`play`.
+It goes through all steps of using the API to run a game:
+- connecting to the server,
+- starting a multiplayer game,
+- setting ships on the board, and
+- exchanging shots until one player wins.
+"""
 import os
 import asyncio
 import random
@@ -11,6 +34,7 @@ SHOTS = tuple((y, x) for y in range(3) for x in range(3))
 
 
 def create_positions() -> "tuple[client.SHIP_PLACEMENT, client.SHIP_PLACEMENT]":
+    """Randomly place a 3 and 1 ship on a 3x3 board"""
     vertical3 = not random.getrandbits(1)
     offset3 = random.getrandbits(1) * 2
     offset1 = random.randint(0, 2)
@@ -34,27 +58,34 @@ def expand(*placements: client.SHIP_PLACEMENT) -> "list[list[str]]":
 
 
 def defeated(board: "list[list[str]]") -> bool:
+    """Check if all ships on the board are defeated"""
     return not any(field.isdigit() for row in board for field in row)
 
 
 def draw(*boards: "list[list[str]]"):
-    print("\n".join(" ".join("".join(row) for row in rows) for rows in zip(*boards)))
+    """Print one or several boards"""
+    print("\n".join("   ".join("".join(row) for row in rows) for rows in zip(*boards)))
 
 
 def play(name: str):
-    time.sleep(0.1)
+    """Single client playing a game using simultaneous shooting"""
+    time.sleep(0.1)  # give the server time to start
     with client.GameSession.connect(name) as session:
+        # start the game
         enemy = session.opponent
         print(f"{name} vs {enemy}")
+        # exchange positions and prepare boards
         my_positions = create_positions()
         enemy_positions = session.place_ships(*my_positions)
         my_board = expand(*my_positions)
         enemy_board = expand(*enemy_positions)
+        # exchange shots
         for my_shot in random.sample(SHOTS, len(SHOTS)):
             session.announce_shot(my_shot)
             enemy_shot = session.expect_shot()
             for (y, x), board in ((my_shot, enemy_board), (enemy_shot, my_board)):
                 board[y][x] = "X"
+            # check if the game is done, i.e. if any player won
             defeat = defeated(my_board), defeated(enemy_board)
             if defeat == (False, False):
                 continue
@@ -69,11 +100,12 @@ def play(name: str):
                 session.end_game(name)
             break
         else:
-            raise NotImplementedError("oops...")
+            raise RuntimeError("Placing all shots should have ended the game...")
         print(f"{name} vs {enemy} => {winner}")
 
 
 async def simulate():
+    """Run a full game, including server and two clients"""
     host, port = "localhost", 8765  # chosen by fair roll of dice
     os.environ[SERVER_URL_ENV] = f"ws://{host}:{port}"
     await asyncio.gather(
