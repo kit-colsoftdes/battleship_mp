@@ -35,13 +35,18 @@ def unpack(_msg: str) -> "dict[str, Any]":
     return payload
 
 
-def unpack_keys(_msg: str, keys: "tuple[str, ...]") -> "Iterable[Any, ...]":
-    """Like :py:func:`unpack` and return only the ``keys``' values of the payload"""
-    payload = unpack(_msg)
+def read_keys(payload, keys: "tuple[str, ...]") -> "Iterable[Any, ...]":
+    """Unpack the ``keys`` of an unpacked ``payload``"""
     try:
         return [payload[key] for key in keys]
     except KeyError as ke:
         raise ProtocolError(f"missing reply field '{ke.args[0]}'") from ke
+
+
+def unpack_keys(_msg: str, keys: "tuple[str, ...]") -> "Iterable[Any, ...]":
+    """Convenience function to :py:func:`~.unpack` and :py:func:`~.read_keys`"""
+    payload = unpack(_msg)
+    return read_keys(payload, keys)
 
 
 def communicate(_ws: Connection, *keys: str, **payload: Any) -> "Iterable[Any, ...]":
