@@ -24,8 +24,8 @@ It goes through all steps of using the API to run a game:
 import os
 import asyncio
 import random
-import time
 import string
+import sys
 import logging
 
 from battleship_mp import client, server, SERVER_URL_ENV
@@ -122,5 +122,6 @@ async def simulate():
 
 
 if __name__ == "__main__":
-    # logging.getLogger("battleship_mp").setLevel("DEBUG")
+    if "debug" in sys.argv:
+        logging.getLogger("battleship_mp").setLevel("DEBUG")
     asyncio.run(simulate())
