@@ -8,3 +8,10 @@ class GameError(Exception):
 
 class Deadlock(GameError):
     """The requested operations by both players would block each other indefinitely"""
+
+
+class GameEnd(Exception):
+    """The game has been ended"""
+    def __init__(self, winner: "str | None"):
+        super().__init__(winner)
+        self.winner = winner
