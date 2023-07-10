@@ -1,0 +1,88 @@
+import os
+import asyncio
+import random
+import time
+import logging
+
+from battleship_mp import client, server, SERVER_URL_ENV
+
+
+SHOTS = tuple((y, x) for y in range(3) for x in range(3))
+
+
+def create_positions() -> "tuple[client.SHIP_PLACEMENT, client.SHIP_PLACEMENT]":
+    vertical3 = not random.getrandbits(1)
+    offset3 = random.getrandbits(1) * 2
+    offset1 = random.randint(0, 2)
+    return (
+        (3, (0, offset3) if vertical3 else (offset3, 0), vertical3),
+        (1, (offset1, 2 - offset3) if vertical3 else (2 - offset3, offset1), vertical3),
+    )
+
+
+def expand(*placements: client.SHIP_PLACEMENT) -> "list[list[str]]":
+    """Expand ship placements to a 3x3 board; ships are represented by numbers"""
+    board = [[" ", " ", " "] for _ in range(3)]
+    for length, (y, x), vertical in placements:
+        if vertical:
+            for offset in range(length):
+                board[y + offset][x] = str(length)
+        else:
+            for offset in range(length):
+                board[y][x + offset] = str(length)
+    return board
+
+
+def defeated(board: "list[list[str]]") -> bool:
+    return not any(field.isdigit() for row in board for field in row)
+
+
+def draw(*boards: "list[list[str]]"):
+    print("\n".join(" ".join("".join(row) for row in rows) for rows in zip(*boards)))
+
+
+def play(name: str):
+    time.sleep(0.1)
+    with client.GameSession.connect(name) as session:
+        enemy = session.opponent
+        print(f"{name} vs {enemy}")
+        my_positions = create_positions()
+        enemy_positions = session.place_ships(*my_positions)
+        my_board = expand(*my_positions)
+        enemy_board = expand(*enemy_positions)
+        for my_shot in random.sample(SHOTS, len(SHOTS)):
+            session.announce_shot(my_shot)
+            enemy_shot = session.expect_shot()
+            for (y, x), board in ((my_shot, enemy_board), (enemy_shot, my_board)):
+                board[y][x] = "X"
+            defeat = defeated(my_board), defeated(enemy_board)
+            if defeat == (False, False):
+                continue
+            elif defeat == (True, True):
+                winner = None
+                session.end_game(None)
+            elif defeat == (True, False):
+                winner = enemy
+                session.end_game(enemy)
+            elif defeat == (False, True):
+                winner = name
+                session.end_game(name)
+            break
+        else:
+            raise NotImplementedError("oops...")
+        print(f"{name} vs {enemy} => {winner}")
+
+
+async def simulate():
+    host, port = "localhost", 8765  # chosen by fair roll of dice
+    os.environ[SERVER_URL_ENV] = f"ws://{host}:{port}"
+    await asyncio.gather(
+        server.serve(port, [host]),
+        asyncio.to_thread(play, "a"),
+        asyncio.to_thread(play, "b"),
+    )
+
+
+if __name__ == "__main__":
+    # logging.getLogger("battleship_mp").setLevel("DEBUG")
+    asyncio.run(simulate())
