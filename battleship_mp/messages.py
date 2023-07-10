@@ -38,7 +38,7 @@ def read_keys(payload, keys: "tuple[str, ...]") -> "Iterable[Any, ...]":
     try:
         return [payload[key] for key in keys]
     except KeyError as ke:
-        raise ProtocolError(f"missing reply field '{ke.args[0]}'") from ke
+        raise ProtocolError(f"missing reply field {ke.args[0]!r}") from ke
 
 
 def unpack_keys(_msg: str, keys: "tuple[str, ...]") -> "Iterable[Any, ...]":

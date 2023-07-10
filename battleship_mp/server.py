@@ -105,8 +105,8 @@ class Game:
         if "winner" not in a_payload and "winner" not in b_payload:
             return
         # if any player forfeits or yields to the opponent, accept this directly...
-        for payload, client, opponent in zip(
-            (a_payload, b_payload), self.clients, self.clients[::-1]
+        for payload, opponent in zip(
+            (a_payload, b_payload), self.clients[::-1]
         ):
             if payload.get("forfeit") or payload.get("winner") == opponent.identifier:
                 exc = GameEnd(winner=opponent.identifier)
@@ -125,7 +125,7 @@ class Game:
 class Server:
     def __init__(self):
         # an unmatched client waiting for a game to start
-        self.wait_start: "Tuple[Client, asyncio.Future[Game]] | None" = None
+        self.wait_start: "Tuple[Client, Future[Game]] | None" = None
 
     async def handle_game(self, websocket: WebSocketServerProtocol):
         logger.debug("handle connection %s", websocket)
