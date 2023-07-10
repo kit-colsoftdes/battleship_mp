@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, ContextManager
 from contextlib import contextmanager
 import random
 import os
@@ -81,7 +81,7 @@ class GameSession:
 
     @classmethod
     @contextmanager
-    def connect(cls, local_name: "None | str") -> "GameSession":
+    def connect(cls, local_name: "None | str") -> "ContextManager[GameSession]":
         """
         Create a new session with a new connection to the server
 
