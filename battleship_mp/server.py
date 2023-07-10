@@ -143,4 +143,4 @@ if __name__ == "__main__":
         help="addresses/hostnames to bind to [default: all]"
     )
     args = CLI.parse_args()
-    run_asyncio(serve(args.port, args.hosts))
+    run_asyncio(serve(args.PORT, args.ADDRESS))
