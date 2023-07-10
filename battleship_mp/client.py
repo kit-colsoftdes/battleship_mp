@@ -163,7 +163,7 @@ class GameSession:
         Returns the ``winner`` determined by the peer.
         If a game is ``forfeit``, the peer is the winner.
         """
-        self._check_transition(State.ENDED, State.STARTED, State.PLACED, State.FIRING)
+        self._check_transition(State.ENDED, State.PLACED, State.FIRING)
         if forfeit:
             winner = self.opponent
         try:
