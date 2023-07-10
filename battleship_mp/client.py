@@ -4,7 +4,7 @@ import random
 import os
 from enum import Enum, auto
 
-from websockets.sync.client import connect, ClientConnection  # type: ignore
+from websockets.sync.client import connect, Connection  # type: ignore
 
 from . import SERVER_URL_ENV, PROTOCOL_VERSION
 from .messages import communicate, fail
@@ -59,7 +59,7 @@ class GameSession:
     Further restrictions may be applied by the peer depending on its game rules.
     """
 
-    def __init__(self, opponent: str, first: bool, connection: ClientConnection):
+    def __init__(self, opponent: str, first: bool, connection: Connection):
         #: humanreadable identifier of the opponent
         self.opponent = opponent
         #: whether this player shoots first
@@ -92,9 +92,7 @@ class GameSession:
             yield cls.start(local_name, websocket)
 
     @classmethod
-    def start(
-        cls, local_name: "None | str", connection: ClientConnection
-    ) -> "GameSession":
+    def start(cls, local_name: "None | str", connection: Connection) -> "GameSession":
         """
         Create a new session on an established connection to the server
 

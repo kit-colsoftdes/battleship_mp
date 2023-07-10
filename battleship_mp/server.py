@@ -4,8 +4,8 @@ import argparse
 import random
 import logging
 
-import websockets  # type: ignore
-from websockets.server import WebSocketServerProtocol  # type: ignore
+import websockets
+from websockets.server import WebSocketServerProtocol
 
 from .messages import pack, unpack, unpack_keys
 from .exceptions import Deadlock, GameEnd
@@ -15,11 +15,11 @@ logger = logging.getLogger("battleship_mp.server")
 
 
 def send(_ws: WebSocketServerProtocol, **payload: Any) -> Awaitable[None]:
-    return _ws.send(pack(payload))  # type: ignore
+    return _ws.send(pack(payload))
 
 
 async def recv(_ws: WebSocketServerProtocol, *keys: str) -> Iterable[Any]:
-    return unpack_keys(await _ws.recv(), keys)
+    return unpack_keys(await _ws.recv(), keys)  # type: ignore[arg-type]
 
 
 class Client(NamedTuple):
@@ -77,7 +77,7 @@ class Game:
         sock_a, sock_b = self.clients[0].websocket, self.clients[1].websocket
         buffer: "tuple[Any, Any]| None" = None
         while True:
-            a_action, b_action = map(unpack, await gather(sock_a.recv(), sock_b.recv()))
+            a_action, b_action = map(unpack, await gather(sock_a.recv(), sock_b.recv()))  # type: ignore[arg-type]
             logger.debug("handle_shots %s, %s, %s", self.identifier, a_action, b_action)
             await self.handle_end(a_action, b_action)
             if "expect_shot" in a_action and "expect_shot" in b_action:
@@ -154,7 +154,7 @@ class Server:
 
 async def serve(port: int, hosts: "Sequence[str] | None") -> None:
     server = Server()
-    async with websockets.serve(server.handle_game, hosts, port):
+    async with websockets.serve(server.handle_game, hosts, port):  # type: ignore[attr-defined]
         logger.info("listening on %s of %s", port, hosts)
         await Future()
 

@@ -1,7 +1,7 @@
 from typing import Any, Iterable, NoReturn
 import json
 
-from websockets.sync.connection import Connection  # type: ignore
+from websockets.sync.connection import Connection
 
 from .exceptions import ProtocolError, GameEnd
 
@@ -52,7 +52,7 @@ def unpack_keys(_msg: str, keys: "tuple[str, ...]") -> "Iterable[Any]":
 def communicate(_ws: Connection, *keys: str, **payload: Any) -> "Iterable[Any]":
     """Send a message ``payload`` and return the reply ``keys`` values"""
     _ws.send(pack(payload))
-    return unpack_keys(_ws.recv(), keys)
+    return unpack_keys(_ws.recv(), keys)  # type: ignore[arg-type]
 
 
 def fail(_ws: Connection, error: Exception) -> NoReturn:
