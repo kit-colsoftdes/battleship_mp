@@ -77,7 +77,9 @@ class Game:
         sock_a, sock_b = self.clients[0].websocket, self.clients[1].websocket
         buffer: "tuple[Any, Any]| None" = None
         while True:
-            a_action, b_action = map(unpack, await gather(sock_a.recv(), sock_b.recv()))  # type: ignore[arg-type]
+            a_action, b_action = map(
+                unpack, await gather(sock_a.recv(), sock_b.recv())
+            )  # type: ignore[arg-type]
             logger.debug("handle_shots %s, %s, %s", self.identifier, a_action, b_action)
             await self.handle_end(a_action, b_action)
             if "expect_shot" in a_action and "expect_shot" in b_action:
