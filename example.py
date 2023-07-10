@@ -25,6 +25,7 @@ import os
 import asyncio
 import random
 import time
+import string
 import logging
 
 from battleship_mp import client, server, SERVER_URL_ENV
@@ -69,7 +70,6 @@ def draw(*boards: "list[list[str]]"):
 
 def play(name: str):
     """Single client playing a game using simultaneous shooting"""
-    time.sleep(0.1)  # give the server time to start
     with client.GameSession.connect(name) as session:
         # start the game
         enemy = session.opponent
@@ -104,15 +104,23 @@ def play(name: str):
         print(f"{name} vs {enemy} => {winner}")
 
 
+PLAYERS = string.ascii_letters + string.digits + "@$%&?"
+
+
 async def simulate():
     """Run a full game, including server and two clients"""
     host, port = "localhost", 8765  # chosen by fair roll of dice
     os.environ[SERVER_URL_ENV] = f"ws://{host}:{port}"
-    await asyncio.gather(
-        server.serve(port, [host]),
-        asyncio.to_thread(play, "a"),
-        asyncio.to_thread(play, "b"),
-    )
+    server_task = asyncio.ensure_future(server.serve(port, [host]))
+    await asyncio.sleep(0.01)
+    for _ in range(64):
+        players = random.sample(PLAYERS, 2)
+        print("###", players[0], "vs", players[1], "###")
+        await asyncio.gather(
+            *(asyncio.to_thread(play, player) for player in players)
+        )
+        await asyncio.sleep(0.5)
+    server_task.cancel()
 
 
 if __name__ == "__main__":
