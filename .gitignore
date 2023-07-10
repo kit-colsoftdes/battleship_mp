@@ -1,0 +1,11 @@
+# Python runtime
+__pycache__
+venv/
+
+# Python packaging
+build/
+dist/
+*.egg-info
+
+# IDE
+.idea
