@@ -32,8 +32,8 @@ test = [
 doc = ["sphinx"]
 
 [project.urls]
-"Homepage" = "https://git.scc.kit.edu/collabsoftwaredesign-2023/battleship_mp"
-"Bug Tracker" = "https://git.scc.kit.edu/collabsoftwaredesign-2023/battleship_mp/issues"
+"Homepage" = "https://github.com/kit-colsoftdes/battleship_mp"
+"Bug Tracker" = "https://github.com/kit-colsoftdes/battleship_mp/issues"
 
 [tool.setuptools.packages.find]
 include = ["battleship_mp", "battleship_mp.*"]
