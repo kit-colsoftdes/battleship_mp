@@ -3,13 +3,13 @@ import json
 
 from websockets.sync.connection import Connection
 
-from .exceptions import ProtocolError, GameError
+from .exceptions import ProtocolError, GameEnd
 
 
 # We only support a few known errors to avoid arbitrary calls
 ERRORS = {
     e.__name__: e for e in (
-        ValueError, TypeError, KeyError, ProtocolError, GameError
+        ValueError, TypeError, KeyError, ProtocolError, GameEnd
     )
 }
 

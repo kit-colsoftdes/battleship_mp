@@ -8,7 +8,7 @@ from websockets.sync.client import connect, ClientConnection
 
 from . import SERVER_URL_ENV, PROTOCOL_VERSION
 from .messages import communicate, fail
-from .exceptions import GameError
+from .exceptions import GameError, GameEnd
 
 
 #: Names used if none is provided
@@ -166,5 +166,9 @@ class GameSession:
         self._check_transition(State.ENDED, State.STARTED, State.PLACED, State.FIRING)
         if forfeit:
             winner = self.opponent
-        (r_winner,) = communicate(self._ws, "winner", winner=winner, forfeit=forfeit)
-        return r_winner if not forfeit else self.opponent
+        try:
+            communicate(self._ws, "winner", winner=winner, forfeit=forfeit)
+        except GameEnd as ge:
+            return ge.winner
+        else:
+            return winner
