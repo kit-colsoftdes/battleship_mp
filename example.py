@@ -20,6 +20,10 @@ It goes through all steps of using the API to run a game:
 - starting a multiplayer game,
 - setting ships on the board, and
 - exchanging shots until one player wins.
+
+The example is driven by :py:func:`simulate`, which is rather complex
+as it needs to handle both the server and the two clients in :py:mod:`asyncio`.
+It is not educational, other than perhaps for setting ``os.environ[SERVER_URL_ENV]``.
 """
 import os
 import asyncio
