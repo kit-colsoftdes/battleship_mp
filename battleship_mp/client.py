@@ -94,7 +94,7 @@ class GameSession:
     @classmethod
     def start(cls, local_name: "None | str", connection: Connection) -> "GameSession":
         """
-        Create a new session on an established connection to the server
+        Create a new session on an established `connection` to the server
 
         This creates a new instance based on server information.
         The underlying websocket must be managed manually.
