@@ -1,7 +1,9 @@
 version: 2
 
-python:
+build:
   image: latest
+
+python:
   version: 3.8
   install:
     - method: pip
