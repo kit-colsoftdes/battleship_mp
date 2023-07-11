@@ -3,14 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to battleship_mp's documentation!
-=========================================
+KIT CSD Battleship MP documentation
+===================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
+The :py:mod:`battleship_mp` provides a client/server
+for use as part of the KIT course Collaborative Software Design.
 
 Indices and tables
 ==================
