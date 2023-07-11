@@ -9,6 +9,9 @@ KIT CSD Battleship MP documentation
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   :hidden:
+
+   client
 
 The :py:mod:`battleship_mp` provides a client/server
 for use as part of the KIT course Collaborative Software Design.
