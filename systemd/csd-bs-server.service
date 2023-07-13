@@ -1,0 +1,16 @@
+[Unit]
+Description=Collaborative Software Design Battle Ship Server
+After=network.target
+Wants=network-online.target
+After=network-online.target
+
+[Install]
+RequiredBy=multi-user.target
+
+[Service]
+Type=simple
+User=rocky
+Group=rocky
+LimitNOFILE=64000
+WorkingDirectory=/home/rocky
+ExecStart=/home/rocky/csd-bs-sever-env/bin/python3 -m battleship_mp.server 8765 %H
