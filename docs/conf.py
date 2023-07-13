@@ -40,3 +40,8 @@ html_theme_options = {
     'github_repo': 'battleship_mp',
     "fixed_sidebar": True,
 }
+
+# -- Options for Extensions -------------------------------------------------
+# autodoc: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
+
+autodoc_member_order = "bysource"
