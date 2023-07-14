@@ -160,6 +160,7 @@ class GameSession:
 
         Returns the ``winner`` determined by the peer.
         If a game is ``forfeit``, the peer is the winner.
+        A draw corresponds to ``winner=None``.
         """
         self._check_transition(State.ENDED, State.PLACED, State.FIRING)
         if forfeit:
