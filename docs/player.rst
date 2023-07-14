@@ -100,7 +100,7 @@ In addition, expect to *adapt* method calls:
             return self._session.announce_shot((y, x))
 
 When expected and provided methods are very different,
-be prepared to provide a *facade* between both conventions:
+be prepared to implement a *facade* between both conventions:
 
 .. code:: python3
 
