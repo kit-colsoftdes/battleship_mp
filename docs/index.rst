@@ -12,6 +12,7 @@ KIT CSD Battleship MP documentation
    :hidden:
 
    client
+   player
 
 The :py:mod:`battleship_mp` provides a client/server
 for use as part of the KIT course Collaborative Software Design.
