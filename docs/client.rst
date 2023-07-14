@@ -8,12 +8,17 @@ Client Usage
 The :py:mod:`battleship_mp.client` library provides
 a client API in the form of a single class :py:class:`~.GameSession`.
 
+Usage Outline
+-------------
+
+Code to use the client only needs to import the :py:class:`~.GameSession`.
+
 .. code:: python3
 
     from battleship_mp.client import GameSession
 
 Since a :py:class:`~.GameSession` also represents remote state,
-it cannot be directly instantiated without knowing the MP protocol.
+it cannot be directly instantiated without knowing the server/client protocol.
 Instead, use :py:meth:`~.GameSession.connect` or :py:meth:`~.GameSession.start`
 to create instances.
 
@@ -43,7 +48,7 @@ and a player can only announce a new shot after the previous one was expected
 by the remote player.
 This allows for two styles of exchanging shots: simultaneous or alternating.
 
-simultaneous shots
+*simultaneous shots*
     Both players announce their shot before expecting the enemy shot.
     This gives a play style as if players made their move at the same time.
 
@@ -55,7 +60,7 @@ simultaneous shots
         enemy_shot = session.expect_shot()
         # process both shots now
 
-alternating shots
+*alternating shots*
     Only one of the players announces their shot and the other expects it.
     This gives a play style of players taking separate turns.
 
