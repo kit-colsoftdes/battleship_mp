@@ -48,12 +48,15 @@ For testing, it is suitable to bind to ``localhost``:
 
     ~ $ python3 -m battleship_mp.server 8765 localhost
 
+This ensures that the server is only available to clients running on the same machine.
+There is no exposure to the local network or internet.
+
 .. note::
 
     The hostnames must correspond to addresses of the host on which the server runs;
     it does not make sense to bind to *other* hosts.
-    For example, `localhost`_ usually just corresponds to the local addresses
-    ``127.0.0.1`` and ``::1``.
+    For example, `localhost`_ conventionally just corresponds to the local loopback
+    addresses ``127.0.0.1`` and ``::1``.
 
 .. _environment variable: https://en.wikipedia.org/wiki/Environment_variable
 .. _localhost: https://en.wikipedia.org/wiki/Localhost
