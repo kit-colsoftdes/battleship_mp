@@ -73,6 +73,15 @@ The constructor can then be used in a `with statement`_:
     You can create two players in one ``with`` statement using
     ``with Player.create(...) as player_a, Player.create(...) as player_b:``.
 
+.. warning::
+
+    The ``opponent`` identifier is sent to whichever player is matched by the server
+    without any authentication.
+    Avoid exposing any personal information such as the account- or hostname
+    (e.g. by creating an ``f"{opponent}@{hostname}"`` identifier).
+    When in doubt, do not provide any identifier - the client API will then
+    create a random one that exposes no information.
+
 Wrapping Methods
 ----------------
 
