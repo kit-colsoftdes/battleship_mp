@@ -70,7 +70,7 @@ The constructor can then be used in a `with statement`_:
 
 Note that you can create two players of type ``P1`` and ``P2``
 in one ``with`` statement using
-``with P1.create(...) as player_1, P2.create(...) as player_1:``.
+``with P1.create(...) as player1, P2.create(...) as player2:``.
 
 .. warning::
 
