@@ -68,10 +68,9 @@ The constructor can then be used in a `with statement`_:
     with RemotePlayer.create(...) as player:
         ...
 
-.. note::
-
-    You can create two players in one ``with`` statement using
-    ``with Player.create(...) as player_a, Player.create(...) as player_b:``.
+Note that you can create two players of type ``P1`` and ``P2``
+in one ``with`` statement using
+``with P1.create(...) as player_1, P2.create(...) as player_1:``.
 
 .. warning::
 
