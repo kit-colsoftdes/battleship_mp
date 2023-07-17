@@ -123,7 +123,7 @@ be prepared to implement a *facade* between both conventions:
         def notify_ship(self, size: int, pos: "tuple[int, int]", vertical: bool):
             """Inform about enemy placing a ship of specific `size` at `pos`"""
             # keep collecting all ship placements without sending any
-            self._enemy_ship_cache.append((size, pos, vertical))
+            self._enemy_ship_buffer.append((size, pos, vertical))
 
         def get_ship(self, size: int) -> "SHIP_PLACEMENT":
             """Get the next placement for a ship of specific `size`"""
@@ -132,7 +132,7 @@ be prepared to implement a *facade* between both conventions:
                 self._my_ship_buffer = list(
                     session.place_ships(*self._enemy_ship_cache)
                 )
-                self._enemy_ship_cache = None
+                self._enemy_ship_buffer = None
             # pick matching ship from collection provided from remote
             for idx, (candidate_size, _, _) in enumerate(self._my_ship_buffer):
                 if size == candidate_size:
