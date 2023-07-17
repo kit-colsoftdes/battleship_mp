@@ -87,7 +87,7 @@ Note that the client API – just like the server - generally imposes
 little restrictions on the game rules.
 If a restriction is not mentioned then the API does not impose it;
 for example, there is no restriction on the board size.
-Each client should check for itself whether all peer adhere to expected rules.
+Each client should check for itself whether all peers adhere to expected rules.
 
 Class Definition
 ----------------
