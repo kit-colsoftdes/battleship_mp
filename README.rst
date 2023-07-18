@@ -2,6 +2,10 @@
 ``battleship_mp`` - Multiplayer Support for CSD Battleship
 ##########################################################
 
+.. image:: https://readthedocs.org/projects/battleship-mp/badge/?version=latest
+    :target: https://battleship-mp.readthedocs.io/en/latest
+    :alt: Documentation Status
+
 This package provides a simple client and server for the Battleship game.
 It tries to be roughly compatible with the Collaborative Software Design implementation.
 Behind the scenes, it uses `WebSocket`_ for communication between client and server.
