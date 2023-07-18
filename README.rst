@@ -2,6 +2,10 @@
 ``battleship_mp`` - Multiplayer Support for CSD Battleship
 ##########################################################
 
+.. image:: https://readthedocs.org/projects/battleship-mp/badge/?version=latest
+    :target: https://battleship-mp.readthedocs.io/en/latest
+    :alt: Documentation Status
+
 This package provides a simple client and server for the Battleship game.
 It tries to be roughly compatible with the Collaborative Software Design implementation.
 Behind the scenes, it uses `WebSocket`_ for communication between client and server.
@@ -39,25 +43,12 @@ See the ``--help`` flag for options.
 Installation
 ------------
 
-You can install the package directly from the repository;
+You can install the package directly via ``pip``;
 only Python >= 3.8 is required.
-Using a `venv`_ is strongly recommended!
 
 .. code:: bash
 
-    ~ $ git clone https://github.com/kit-colsoftdes/battleship_mp.git
-    Cloning into 'battleship_mp'...
-    ...
-    ~ $ python3 -m venv venv
-    ~ $ source venv/bin/activate
-    (venv) ~ $ python3 -m pip install ./battleship_mp
-    Processing path/to/repo
-        ...
-    Successfully installed battleship_mp-1.0.0
-
-**Note**:
-If you want to develop in the repo, also pass the ``-e`` flag to pip.
-This allows you to make changes without having to re-install the package.
+    ~ $ python3 -m pip install kcsd-battleship-mp
 
 .. _WebSocket: https://en.wikipedia.org/wiki/WebSocket
 .. _venv: https://docs.python.org/3/library/venv.html
