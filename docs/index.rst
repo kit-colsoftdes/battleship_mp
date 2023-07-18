@@ -18,6 +18,13 @@ KIT CSD Battleship MP documentation
 The :py:mod:`battleship_mp` provides a client/server
 for use as part of the KIT course Collaborative Software Design.
 
+You can install the package directly via ``pip``;
+only Python >= 3.8 is required.
+
+.. code:: bash
+
+    ~ $ python3 -m pip install kcsd-battleship-mp
+
 .. warning::
 
    The client and server do not authenticate peers in any way.
