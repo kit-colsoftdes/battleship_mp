@@ -1,4 +1,4 @@
-from typing import Any, Iterable, NoReturn
+from typing import Any, Iterable, NoReturn, Type
 import json
 
 from websockets.sync.connection import Connection
@@ -10,7 +10,7 @@ from .exceptions import ProtocolError, GameEnd
 ERRORS = {
     e.__name__: e for e in (ValueError, TypeError, KeyError, ProtocolError, GameEnd)
 }
-SERIALIZABLE_EXCEPTIONS = tuple(ERRORS)
+SERIALIZABLE_EXCEPTIONS: "tuple[Type[Exception], ...]" = tuple(ERRORS.values())
 
 
 def pack(
