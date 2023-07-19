@@ -10,6 +10,7 @@ from .exceptions import ProtocolError, GameEnd
 ERRORS = {
     e.__name__: e for e in (ValueError, TypeError, KeyError, ProtocolError, GameEnd)
 }
+SERIALIZABLE_EXCEPTIONS = tuple(ERRORS)
 
 
 def pack(
