@@ -133,22 +133,18 @@ class GameSession:
         self._check_transition(State.PLACED, State.STARTED)
         l_sizes, l_coords, l_vertical = zip(*ships)
         try:
-            ships = tuple(
-                zip(
-                    *communicate(
-                        self._ws,
-                        "sizes",
-                        "coords",
-                        "vertical",
-                        sizes=l_sizes,
-                        coords=l_coords,
-                        vertical=l_vertical,
-                    )
-                )
+            zipped_ships = communicate(
+                self._ws,
+                "sizes",
+                "coords",
+                "vertical",
+                sizes=l_sizes,
+                coords=l_coords,
+                vertical=l_vertical,
             )
         except websockets.exceptions.ConnectionClosed:
             raise ConnectionClosed() from None
-        return ships
+        return tuple(zip(*zipped_ships))
 
     def announce_shot(self, coord: "tuple[int, int]") -> None:
         """Announce that a shot has been fired"""
