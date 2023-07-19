@@ -43,7 +43,7 @@ class Game:
             await self.handle_shots()
         except GameEnd as ge:
             logger.info("end %s, winner %s", self.identifier, ge.winner)
-        except websockets.ConnectionClosed:
+        except websockets.exceptions.ConnectionClosed:
             # the connection of at least one player is gone
             # let those know that we can still reach
             for client in self.clients:
