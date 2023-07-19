@@ -4,11 +4,12 @@ import random
 import os
 from enum import Enum, auto
 
+import websockets.exceptions
 from websockets.sync.client import connect, Connection  # type: ignore
 
 from . import SERVER_URL_ENV, PROTOCOL_VERSION
 from .messages import communicate, fail
-from .exceptions import GameError, GameEnd
+from .exceptions import GameError, GameEnd, ConnectionClosed
 
 
 #: Names used if none is provided
@@ -104,13 +105,16 @@ class GameSession:
             if local_name is not None
             else f"Anonymous {random.choice(DEFAULT_NAMES)}"
         )
-        identifier, first = communicate(
-            connection,
-            "identifier",
-            "first",
-            identifier=local_name,
-            version=PROTOCOL_VERSION,
-        )
+        try:
+            identifier, first = communicate(
+                connection,
+                "identifier",
+                "first",
+                identifier=local_name,
+                version=PROTOCOL_VERSION,
+            )
+        except websockets.exceptions.ConnectionClosed:
+            raise ConnectionClosed() from None
         return cls(identifier, first, connection)
 
     def place_ships(self, *ships: SHIP_PLACEMENT) -> "tuple[SHIP_PLACEMENT, ...]":
@@ -128,30 +132,39 @@ class GameSession:
         """
         self._check_transition(State.PLACED, State.STARTED)
         l_sizes, l_coords, l_vertical = zip(*ships)
-        ships = tuple(
-            zip(
-                *communicate(
-                    self._ws,
-                    "sizes",
-                    "coords",
-                    "vertical",
-                    sizes=l_sizes,
-                    coords=l_coords,
-                    vertical=l_vertical,
+        try:
+            ships = tuple(
+                zip(
+                    *communicate(
+                        self._ws,
+                        "sizes",
+                        "coords",
+                        "vertical",
+                        sizes=l_sizes,
+                        coords=l_coords,
+                        vertical=l_vertical,
+                    )
                 )
             )
-        )
+        except websockets.exceptions.ConnectionClosed:
+            raise ConnectionClosed() from None
         return ships
 
     def announce_shot(self, coord: "tuple[int, int]") -> None:
         """Announce that a shot has been fired"""
         self._check_transition(State.FIRING, State.PLACED, State.FIRING)
-        communicate(self._ws, announce_shot=coord)
+        try:
+            communicate(self._ws, announce_shot=coord)
+        except websockets.exceptions.ConnectionClosed:
+            raise ConnectionClosed() from None
 
     def expect_shot(self) -> "tuple[int, int]":
         """Wait for a shot to be fired and return its coordinates"""
         self._check_transition(State.FIRING, State.PLACED, State.FIRING)
-        (coord,) = communicate(self._ws, "coord", expect_shot=True)
+        try:
+            (coord,) = communicate(self._ws, "coord", expect_shot=True)
+        except websockets.exceptions.ConnectionClosed:
+            raise ConnectionClosed() from None
         return tuple(coord)  # type: ignore
 
     def end_game(self, winner: "str | None", forfeit: bool = False) -> "str | None":
@@ -167,6 +180,8 @@ class GameSession:
             winner = self.opponent
         try:
             communicate(self._ws, "winner", winner=winner, forfeit=forfeit)
+        except websockets.exceptions.ConnectionClosed:
+            raise ConnectionClosed() from None
         except GameEnd as ge:
             return ge.winner
         else:
