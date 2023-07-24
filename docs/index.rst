@@ -14,6 +14,7 @@ KIT CSD Battleship MP documentation
    client
    player
    server
+   maintenance
 
 .. image:: https://readthedocs.org/projects/battleship-mp/badge/?version=latest
     :target: https://battleship-mp.readthedocs.io/en/latest
