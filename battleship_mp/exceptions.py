@@ -2,6 +2,10 @@ class ProtocolError(Exception):
     """Exchanged messages did not match the expected protocol"""
 
 
+class ConnectionClosed(Exception):
+    """The client/server connection was closed unexpectedly"""
+
+
 class GameError(Exception):
     """The shared game entered an erroneous state"""
 

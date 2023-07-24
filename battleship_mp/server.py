@@ -7,8 +7,8 @@ import logging
 import websockets
 from websockets.server import WebSocketServerProtocol
 
-from .messages import pack, unpack, unpack_keys
-from .exceptions import Deadlock, GameEnd
+from .messages import pack, unpack, unpack_keys, SERIALIZABLE_EXCEPTIONS
+from .exceptions import Deadlock, GameEnd, ProtocolError
 
 
 logger = logging.getLogger("battleship_mp.server")
@@ -43,12 +43,31 @@ class Game:
             await self.handle_shots()
         except GameEnd as ge:
             logger.info("end %s, winner %s", self.identifier, ge.winner)
-        except Exception as exc:
+        except websockets.exceptions.ConnectionClosed:
+            # the connection of at least one player is gone
+            # let those know that we can still reach
+            for client in self.clients:
+                if not client.websocket.open:
+                    logger.info("end %s, closed %s", self.identifier, client.identifier)
+                    continue
+                else:
+                    await client.websocket.send(pack(error=GameEnd(winner=None)))
+        except SERIALIZABLE_EXCEPTIONS as exc:
             message = pack(error=exc)
             await gather(
                 self.clients[0].websocket.send(message),
                 self.clients[1].websocket.send(message),
             )
+            logger.exception("abort %s", self.identifier)
+        except Exception:
+            # something completely unexpected happened
+            # try to let clients know but otherwise just drop everything and get out
+            message = pack(error=ProtocolError("internal server error"))
+            for client in self.clients:
+                try:
+                    await client.websocket.send(message)
+                except Exception:
+                    pass
             logger.exception("abort %s", self.identifier)
 
     async def handle_start(self) -> None:
