@@ -15,6 +15,18 @@ KIT CSD Battleship MP documentation
    player
    server
 
+.. image:: https://readthedocs.org/projects/battleship-mp/badge/?version=latest
+    :target: https://battleship-mp.readthedocs.io/en/latest
+    :alt: Documentation Status
+
+.. image:: https://img.shields.io/pypi/v/kcsd-battleship-mp.svg
+    :alt: Available on PyPI
+    :target: https://pypi.python.org/pypi/kcsd-battleship-mp/
+
+.. image:: https://img.shields.io/github/license/kit-colsoftdes/battleship_mp.svg
+    :alt: License
+    :target: https://github.com/kit-colsoftdes/battleship_mp/blob/main/LICENSE
+
 The :py:mod:`battleship_mp` provides a client/server
 for use as part of the KIT course Collaborative Software Design.
 
