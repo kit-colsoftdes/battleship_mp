@@ -117,7 +117,7 @@ class Game:
                 )
             elif "expect_shot" in a_action and "announce_shot" in b_action:
                 await gather(
-                    send(sock_a, coord=a_action["announce_shot"]), send(sock_b)
+                    send(sock_a, coord=b_action["announce_shot"]), send(sock_b)
                 )
             else:
                 buffer = a_action["announce_shot"], b_action["announce_shot"]
