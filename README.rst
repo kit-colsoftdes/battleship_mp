@@ -6,6 +6,14 @@
     :target: https://battleship-mp.readthedocs.io/en/latest
     :alt: Documentation Status
 
+.. image:: https://img.shields.io/pypi/v/kcsd-battleship-mp.svg
+    :alt: Available on PyPI
+    :target: https://pypi.python.org/pypi/kcsd-battleship-mp/
+
+.. image:: https://img.shields.io/github/license/kit-colsoftdes/battleship_mp.svg
+    :alt: License
+    :target: https://github.com/kit-colsoftdes/battleship_mp/blob/main/LICENSE
+
 This package provides a simple client and server for the Battleship game.
 It tries to be roughly compatible with the Collaborative Software Design implementation.
 Behind the scenes, it uses `WebSocket`_ for communication between client and server.
